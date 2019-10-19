@@ -1,7 +1,8 @@
 ﻿Imports WindowsApplication2.CaeserCipher
 
 Public Class Form1
-    'BINDINGS
+    'VARS
+
 
     'ENCRYPT
     Private Sub Encrypt() Handles C1Button1.Click
@@ -12,10 +13,31 @@ Public Class Form1
 
     'DECRYPT
     Private Sub Decrypt() Handles C1Button2.Click
-        'Dim cc = If(IsNumeric(keyentry.Text), New CaeserCipher(keyentry.Text), Nothing)
+        Dim cc = If(IsNumeric(keyentry.Text), New CaeserCipher(keyentry.Text), Nothing)
         'RichTextBox2.Clear()
         'RichTextBox2.Text = If(IsNothing(cc), Nothing, cc.Decipher(RichTextBox1.Text))
+        Dim r = New List(Of String)
+        For Each line In RichTextBox1.Lines
+            r.Add(line & vbNewLine)
+        Next
 
+        Dim dummyRC = New RichTextBox
+        dummyRC.Text = If(IsNothing(cc), Nothing, cc.Decipher(r))
+        Dim newText As List(Of String)
+        If dummyRC.Text <> "" Then
+            newText = New List(Of String)
+            For Each line In dummyRC.Lines
+                newText.Add(line)
+            Next
+        End If
+
+        If IsNothing(newText) = False Then
+            For i = 0 To newText.Count - 1
+
+            Next
+        End If
+
+        RichTextBox2.Text = 
     End Sub
 
     'CRACK
@@ -23,8 +45,13 @@ Public Class Form1
         ListBox1.Items.Clear()
         For i = 0 To 25
             Dim cc = New CaeserCipher(i)
-            ListBox1.Items.Add(i.ToString & " - " & cc.Decipher(RichTextBox1.Text))
+            Dim r = New List(Of String)
+            For Each line In RichTextBox1.Lines
+                r.Add(line & vbNewLine)
+            Next
+            ListBox1.Items.Add(i.ToString & " - " & cc.Decipher(r))
         Next
+
     End Sub
 
     'INITITIALIZE
@@ -108,9 +135,13 @@ CIPHER:
         Dim r2 As New List(Of String)
         For i = 0 To 25
             Dim cc = New CaeserCipher(i)
+            Dim r = New List(Of String)
+            For Each line In RichTextBox1.Lines
+                r.Add(line & vbNewLine)
+            Next
             'matches = If(RichTextBox2.Text = , True, False)
             Dim rtc = New RichTextBox
-            rtc.Text = cc.Decipher(RichTextBox1.Text)
+            rtc.Text = cc.Decipher(r)
             r1.AddRange(rtc.Lines.ToArray)
             r2.AddRange(RichTextBox2.Lines.ToArray)
             Console.WriteLine(rtc.Lines.Count)
@@ -215,4 +246,6 @@ NON_CIPHER:
             System.IO.File.WriteAllText(SaveFileDialog1.FileName, RichTextBox2.Text)
         End If
     End Sub
+
+
 End Class
